@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap" Version="5.2.2" />
+    <PackageReference Include="ImageProcessor.Web" Version="4.12.1" />
+    <PackageReference Include="LiveSharp" Version="2.0.35" />
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\font\" />
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,139 @@
+﻿@page
+@model BookStore.Pages.actionsModel
+@using MySql.Data.MySqlClient;
+@using System.Data;
+@using Newtonsoft.Json;
+@{
+}
+@{
+    Layout = null;
+    //Request.Query : รับinput จาก Client แบบ GET
+    var action = Request.Query["action"];
+    var result = "Product error";
+
+    //ติดต่อฐานข้อมูล
+      MySqlConnection conn;
+	    string server = "localhost";
+	    string database = "bookstore";
+	    string uid = "root";
+	    string password = "12345678";
+	    string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+	    database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";SSL Mode=None;";
+	    conn = new MySqlConnection(connectionString);
+	    try
+	    {
+    	    conn.Open();
+	    }
+	    catch (Exception ex)
+	    {
+        @Html.Raw("มีปัญหาการเชื่อมต่อฐานข้อมูล")
+        return;
+    }
+
+    if (action =="insert")
+    {
+        var product_id = Request.Query["product_id"];
+        var product_name = Request.Query["product_name"];
+        var price = Request.Query["price"];
+        var product_type = Request.Query["product_type"];
+        var quantity = Request.Query["quantity"];
+
+        string sqlCmd = "INSERT INTO Products VALUES(@p1, @p2, @p3, @p4, @p5 )";
+        MySqlCommand cmd = new MySqlCommand(sqlCmd, conn);
+        cmd.Parameters.AddWithValue("@p1", product_id);
+        cmd.Parameters.AddWithValue("@p2", product_name);
+        cmd.Parameters.AddWithValue("@p3", price);
+        cmd.Parameters.AddWithValue("@p4", product_type );
+        cmd.Parameters.AddWithValue("@p5", quantity);
+
+        cmd.ExecuteNonQuery();
+
+        //ทำการเพิ่มข้อมูลไปยังฐานข้อมูล
+        result = "Product insert success";
+
+    }else if (action =="update")
+    {
+        var product_id = Request.Query["product_id"];
+        var product_name = Request.Query["product_name"];
+        var price  = Request.Query["price"];
+        var product_type = Request.Query["product_type"];
+        var quantity = Request.Query["quantity"];
+
+        string sqlCmd = "UPDATE Products "
+                      + " SET ProductName = @p2, "
+                      + " Price = @p3, "
+                      + " ProductType = @p4, "
+                      + " Quantity = @p5 "
+                      + " WHERE ProductID = @p1";
+        MySqlCommand cmd = new MySqlCommand(sqlCmd, conn);
+        cmd.Parameters.AddWithValue("@p1", product_id);
+        cmd.Parameters.AddWithValue("@p2", product_name);
+        cmd.Parameters.AddWithValue("@p3", price);
+        cmd.Parameters.AddWithValue("@p4", product_type );
+        cmd.Parameters.AddWithValue("@p5", quantity);
+
+        cmd.ExecuteNonQuery();
+
+
+        //ทำการแก้ไขข้อมูลไปยังฐานข้อมูล
+        result = "Product update success";
+    }else if (action =="delete")
+    {
+        //ทำการลบข้อมูลไปยังฐานข้อมูล
+        var product_id = Request.Query["product_id"];
+
+        string sqlCmd = "DELETE FROM Products WHERE productID = @pid";
+        MySqlCommand cmd = new MySqlCommand(sqlCmd, conn);
+        cmd.Parameters.AddWithValue("@pid", product_id);
+        cmd.ExecuteNonQuery();
+
+        result = "Product delete success";
+    } 
+    else if (action =="select")
+    { 
+        //ทำการลบข้อมูลไปยังฐานข้อมูล
+        var query = Request.Query["query"];
+        string sqlCmd = "SELECT * FROM Products "
+                      + " WHERE ProductID  LIKE @p1 "
+                      + " OR ProductName  LIKE @p1 "
+                      + " OR Price  LIKE @p1 "
+                      + " OR ProductType  LIKE @p1 "
+                      + " OR Quantity  LIKE @p1 ";
+        MySqlCommand cmd = new MySqlCommand(sqlCmd, conn);
+        cmd.Parameters.AddWithValue("@p1", "%" + query + "%");
+        MySqlDataReader reader = cmd.ExecuteReader();
+
+        DataTable dt = new DataTable();
+        dt.Load(reader);
+
+        string json_string = JsonConvert.SerializeObject(dt);
+        result = json_string;
+
+
+    }else if (action =="fetch_single")
+    {
+        //ทำการลบข้อมูลไปยังฐานข้อมูล
+        var query = Request.Query["query"];
+        //System.Diagnostics.Debug.WriteLine("XXXXD" + query); //เป็นการ debug ตัวแปรฝั่ง server
+        string sqlCmd = "SELECT * FROM Products "
+                      + " WHERE ProductID = @p1 ";
+
+	    MySqlCommand cmd = new MySqlCommand(sqlCmd, conn);
+	    cmd.Parameters.AddWithValue("@p1", query );
+	    MySqlDataReader reader = cmd.ExecuteReader();
+
+        DataTable dt = new DataTable();
+        dt.Load(reader);
+
+        string json_string = JsonConvert.SerializeObject(dt);
+        result = json_string;
+
+    }
+    else
+    {
+        result = "unknow action";
+    }
+
+}
+@Html.Raw(result)
+

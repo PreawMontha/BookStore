@@ -1,0 +1,8 @@
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.csproj.AssemblyReference.cache
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.GeneratedMSBuildEditorConfig.editorconfig
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.AssemblyInfoInputs.cache
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.AssemblyInfo.cs
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.csproj.CoreCompileInputs.cache
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.MvcApplicationPartsAssemblyInfo.cache
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.RazorAssemblyInfo.cache
+C:\แพรว\Project\BookStore\BookStore\obj\Release\net6.0\BookStore.RazorAssemblyInfo.cs

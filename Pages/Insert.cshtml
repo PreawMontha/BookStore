@@ -1,0 +1,245 @@
+﻿@page
+@model BookStore.Pages.InsertModel
+@{
+}
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+        $(document).ready(function () {
+			selectData("");//เริ่มโปรแกรมให้แสดง ตารางเลย ดังนั้น selectData("") ทำหน้าที่เป็นการ refresh ตาราง
+			
+            //เพิ่ม event การกดปุ่มให้ ปุ่ม 3 ปุ่ม
+            $("#insert").click(function() { insertData(); });
+            $("#update").click(function() { updateData(); });
+            $("#delete").click(function() { deleteData($("#product_id").val()); });
+			$("#search").click(function() { selectData($("#query").val()); });
+
+			//อ่านว่าเพิ่ม event click .ให้กับ element ทุกตัวที่มีคลาสเป็น edit
+			$(document).on('click', '.edit', function () {
+				var id = $(this).attr("id");
+                fetchSingleData(id); 
+
+			 });
+
+			 //อ่านว่าเพิ่ม event click .ให้กับ element ทุกตัวที่มีคลาสเป็น delete
+			 $(document).on('click', '.delete', function () {
+				 var id = $(this).attr("id");
+				 var result = confirm("Want to delete this product id = " + id + " ?");
+                 if (result)deleteData(id);
+
+			 });
+
+		});
+
+	  //แปลง json เป็น html table
+    function CreateTableFromJSON(json_data) {
+        if (json_data.length == 0) return "";
+
+        var col = [];
+        for (var key in json_data[0]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        var edit_header = document.createElement("th");      // TABLE HEADER.
+        edit_header.innerHTML = "แก้ไขข้อมูล";
+        tr.appendChild(edit_header);
+
+        var delete_header = document.createElement("th");      // TABLE HEADER.
+        delete_header.innerHTML = "ลบข้อมูล";
+        tr.appendChild(delete_header);
+
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < json_data.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = json_data[i][col[j]];
+            }
+
+            var id = json_data[i][col[0]];
+            //เพิ่มปุ่ม edit
+            var tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = '<button type="button" name="edit" class="btn-xs edit button5" id="' + id + '" >Edit</button>';
+            //เพิ่มปุ่ม delete
+            tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = '<button type="button" name="delete" class="btn-xs delete button6" id="' + id + '">Delete</button>';
+
+
+        }
+
+        return table;
+    }
+
+	function insertData() { 
+		//อ่านค่าที่ user กรอกใน textfield
+		$.ajax({
+					url: "./actions",
+					method: "GET",
+					headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+					data: { action: "insert",
+					   product_id : $("#product_id").val() ,
+					   product_name : $("#product_name").val() ,
+					   price : $("#price").val() ,
+					   product_type : $("#product_type").val() ,
+					   quantity : $("#quantity").val() 
+					},
+					success: function (data) { alert(data);  selectData(""); },
+					error: function (xhr, ajaxOptions, thrownError) {alert(thrownError);}
+				});
+	}
+
+	function updateData() { 
+       $.ajax({
+					url: "./actions",
+					method: "GET",
+					headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+					data: { action: "update",
+					   product_id : $("#product_id").val() ,
+					   product_name : $("#product_name").val() ,
+					   price : $("#price").val() ,
+					   product_type : $("#product_type").val() ,
+					   quantity : $("#quantity").val() 
+					},
+					success: function (data) { alert(data);  selectData("");},
+					error: function (xhr, ajaxOptions, thrownError) {alert(thrownError);}
+				});
+	}
+
+	function deleteData(ProductID) { 
+        alert(ProductID);
+		$.ajax({
+					url: "./actions",
+					method: "GET",
+					headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+					data: { action: "delete" ,
+					   product_id : ProductID
+					},
+					success: function (data) { alert(data);  selectData("");},
+					error: function (xhr, ajaxOptions, thrownError) {alert(thrownError);}
+				});
+	}
+	
+	function selectData(query) { 
+        $.ajax({
+					url: "./actions",
+					method: "GET",
+					headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+					data: { action: "select" ,
+					   query : query
+					},
+					dataType: "json",
+               success: function(data) { 
+				    var table = CreateTableFromJSON(data); //แปลง json เป็น html table
+					var divContainer = $("#product_result");
+					divContainer.addClass("table table-striped");
+                    divContainer.html(table);
+			   },
+					error: function (xhr, ajaxOptions, thrownError) {alert(thrownError);}
+				});
+	}
+	
+	function fetchSingleData(id) { 
+		
+		$.ajax({
+					url: "./actions",
+					method: "GET",
+					headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+					data: { action: "fetch_single" ,
+					   query : id
+					},
+					dataType: "json",
+					success: function (data) { 
+                        if (data.lenth < 1) return;
+						//ดึงค่าจาก json เช่น data[0]["ProductID"])
+						//และใส่ค่าเข้าไปที่ html element : product_id
+						$("#product_id").val(data[0]["ProductID"]);
+						$("#product_name").val(data[0]["ProductName"]);
+						$("#price").val(data[0]["Price"]);
+						$("#product_type").val(data[0]["ProductType"]);
+						$("#quantity").val(data[0]["Quantity"]);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {alert(thrownError);}
+				});
+	}
+
+	</script>
+</head>
+
+<form class="container px-4 px-lg-5">
+	@Html.AntiForgeryToken()
+	<h1 align = center class="sample fn">Product</h1>
+	<div class="form-group">
+    	<label class="sample fn2">Product ID</label>
+    	<input type="text" name="product_id" id="product_id" class="form-control" />
+	</div>
+	<br/>
+	<div class="form-group">
+    	<label class="sample fn2" >Product Name</label>
+    	<input type="text" name="product_name" id="product_name" class="form-control" />
+	</div>
+	<br/>
+	<div class="form-group">
+		<label for="basic-url" class="sample fn2 form-label">Price</label>
+			<div class="input-group mb-3">
+				<span class="input-group-text">B</span>
+				<input type="text" name="price" id="price" class="form-control">
+				<span class="input-group-text">.00</span>
+			</div>
+	</div>
+	<div class="sample fn2 form-group">
+		<label>Product Type</label>
+			<select type="text" name="product_type" id="product_type" class="form-control">
+					<option value="Fantasy">Fantasy</option> 
+					<option value="Fiction">Fiction</option>
+					<option value="Romance">Romance</option>
+					<option value="Funny Books for Kids">Funny Books for Kids</option>
+					<option value="Storybooks">Storybooks</option>
+					<option value="Thrillers">Thrillers</option>
+					<option value="Graphic Novels">Graphic Novels</option>
+					<option value="Classic Books">Classic Books</option>
+					<option value="Activity Books">Activity Books</option>
+					<option value="Sci-Fi Books">Sci-Fi Books</option>
+					<option value="Horror">Horror</option>	
+			</select>
+	</div>
+	<br/>
+	<div class="form-group">
+    	<label class="sample fn2">Quantity</label>
+    	<input type="text" name="quantity" id="quantity" class="form-control" />
+	</div>
+
+	<br/>
+	<div class="form-group sample fn2" align = center>
+		<input class="button" type="button" id="insert" value="insert" />&emsp;&emsp;
+		<input class="button2" type="button" id="update" value="update" />&emsp;&emsp;
+        <input class="button3" type="button" id="delete" value="delete" />
+	</div>
+	<br/>
+	<div class="form-group sample fn2" align = center>
+		<label class="form-group sample fn2"> search product </label>
+		<input class="text1" type="text" name="query" id="query" placeholder="Search..">
+		<input class="button4" type="button" id="search" value="search" />
+	</div>
+	<br/>
+     <div id="product_result"></div>
+	 
+
+</form>
+

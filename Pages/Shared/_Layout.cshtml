@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>@ViewData["Title"] - Book Store</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BookStore.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bc container-fluid ">
+        <div class="container px-4 px-lg-5 sample">
+                <color class="fn3" >Book Store</color>
+                <ul class="navbar-nav  mb-2 mb-lg-0 ms-lg-4 ">
+                    <li class="nav-item "><a class="nav-link active text-warning" aria-current="page" asp-page="/index" >Home</a></li>
+                        <li class="nav-item"><a class="nav-link active  text-warning" aria-current="page" asp-page="/insert">Admin</a></li>
+                        <li class="nav-item"><a class="nav-link active  text-warning" aria-current="page" asp-page="/About">About</a></li>
+                    </ul>
+                </div>
+        </nav>
+    </header>
+    <div class="container-fluid ba">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="text-center text-white" style="background-color: #f1f1f1;">
+  <!-- Grid container -->
+  <div class="container pt-4">
+    <!-- Section: Social media -->
+    <section class="mb-4">
+      <!-- Facebook -->
+      <a
+        class="btn btn-link btn-floating btn-lg text-dark m-1"
+        href="https://www.facebook.com/"
+        role="button"
+        data-mdb-ripple-color="dark"
+         ><img src="/img/facebook.svg"/>
+      </a>
+
+      <a
+        class="btn btn-link btn-floating btn-lg text-dark m-1"
+        href="https://www.youtube.com/"
+        role="button"
+        data-mdb-ripple-color="dark"
+         ><img src="/img/youtube.svg"/>
+      </a>
+
+      <a
+        class="btn btn-link btn-floating btn-lg text-dark m-1"
+        href="https://www.google.com/webhp?hl=th&sa=X&ved=0ahUKEwiZv5XD_5f7AhVig-YKHcw2C_oQPAgI"
+        role="button"
+        data-mdb-ripple-color="dark"
+         ><img src="/img/google.svg"/>
+      </a>
+
+      <!-- Instagram -->
+      <a
+        class="btn btn-link btn-floating btn-lg text-dark m-1"
+        href="https://access.line.me/oauth2/v2.1/login?loginState=VbZMSH51EHSy50niOOopAl&loginChannelId=1648148465&returnUri=%2Foauth2%2Fv2.1%2Fauthorize%2Fconsent%3Fbot_prompt%3Dnormal%26scope%3Dopenid%2Bprofile%26response_type%3Dcode%26state%3DPtJoVGc9zx%26redirect_u#/"
+        role="button"
+        data-mdb-ripple-color="dark"
+         ><img src="/img/line.svg"/>
+      </a>
+
+      <!-- Linkedin -->
+      <a
+        class="btn btn-link btn-floating btn-lg text-dark m-1"
+        href="https://www.instagram.com/"
+        role="button"
+        data-mdb-ripple-color="dark"
+        ><img src="/img/instagram.svg"/>
+    </a>
+    </section>
+    </div>
+</footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
